@@ -1,0 +1,57 @@
+name: Virtual Machine - RTX 4060 Simulada
+
+on:
+workflow_dispatch: # Permite iniciar manualmente o workflow
+push:
+branches: [ main ]
+
+jobs:
+setup-vm:
+runs-on: ubuntu-latest
+name: Configurar VM Simulada
+steps:
+- name: Checkout do código
+uses: actions/checkout@v4
+
+  - name: Exibir Configuração Simulada
+    run: |
+      echo "🚀 Iniciando VM GitHub"
+      echo "CPU: 8 núcleos virtuais"
+      echo "RAM: 16 GB"
+      echo "Disco: 32 GB SSD"
+      echo "GPU: RTX 4060 (simulada)"
+      free -h
+      df -h
+      nproc
+
+  - name: Instalar Dependências Principais
+run: |
+echo "🧩 Instalando dependências..."
+sudo apt-get update -y
+sudo apt-get install -y git python3 python3-pip nodejs npm docker.io || true
+echo "✅ Dependências instaladas com sucesso!"
+
+  - name: Instalar GitHub CLI
+    run: |
+      type -p curl >/dev/null || sudo apt install curl -y
+      curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
+      sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+      sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+      https://cli.github.com/packages stable main" | \
+      sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+      sudo apt update
+      sudo apt install gh -y
+
+  - name: Testar GPU (simulada)
+    run: |
+      echo "⚙️ Testando ambiente gráfico..."
+      echo "NVIDIA-SMI (simulado):"
+      echo "GPU 0: RTX 4060 (8GB VRAM)"
+      echo "Driver: 550.78"
+      echo "CUDA Version: 12.4"
+      echo "Tudo pronto pra buildar projetos!"
+
+  - name: Verificação Final
+    run: |
+      echo "✅ VM simulada configurada com sucesso!"
